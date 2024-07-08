@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Memory Game</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: fantasy;
+      }
+
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: rgb(247, 20, 88);
+        min-height: 100vh;
+      }
+
+      .container {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 40px;
+        background-color: rgb(247, 20, 88);
+        border-radius: 10px;
+      }
+
+      h2 {
+        font-size: 3em;
+        color: aliceblue;
+        text-transform: uppercase;
+      }
+
+      .reset {
+        padding: 10px;
+        color: rgb(214, 13, 114);
+        background-color: white;
+        font-size: 2em;
+        text-transform: uppercase;
+        cursor: pointer;
+        font-weight: 700;
+        border: none;
+      }
+
+      .game {
+        margin-left: 30px;
+        margin-right: 0;
+        width: 480px;
+        height: 500px;
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 15px;
+        transform-style: preserve-3d;
+      }
+
+      .item {
+        position: relative;
+        width: 100px;
+        height: 100px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 3em;
+        background-color: rgb(221, 27, 73);
+        transform: rotateY(180deg);
+        transition: 0.3s;
+        border-radius: 10px;
+      }
+
+      .item.boxopen {
+        transform: rotateY(0deg);
+      }
+
+      .item::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-color: indianred;
+        transform: rotateY(0deg);
+        backface-visibility: hidden;
+      }
+
+      .boxopen::after,
+      .boxmatch::after {
+        transform: rotateY(180deg);
+      }
+
+      @media (max-width: 480px) {
+        h2 {
+          text-align: center;
+        }
+        .game {
+          width: 100%;
+          margin: 0px 15px;
+          padding: 0px 30px;
+        }
+        .item {
+          width: 65px;
+          height: 80px;
+          font-size: 1.5em;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h2>Memory Game</h2>
+      <div class="game"></div>
+      <button class="reset">Reset Game</button>
+    </div>
+
+    <script>
+      const emoji = [
+        "😂",
+        "😂",
+        "😎",
+        "😎",
+        "😍",
+        "😍",
+        "🤩",
+        "🤩",
+        "😜",
+        "😜",
+        "😭",
+        "😭",
+        "😤",
+        "😤",
+        "😡",
+        "😡",
+      ];
+      const shuffle = () => {
+        if (Math.random() > 0.5) {
+          return 2;
+        } else {
+          return -1;
+        }
+      };
+
+      const shuffled = emoji.sort(shuffle);
+      for (let i = 0; i < emoji.length; i++) {
+        let box = document.createElement("div");
+        box.className = "item";
+        box.innerHTML = shuffled[i];
+        box.onclick = function () {
+          this.classList.add("boxopen");
+          setTimeout(function () {
+            if (document.querySelectorAll(".boxopen").length > 1) {
+              if (
+                document.querySelectorAll(".boxopen")[0].innerHTML ==
+                document.querySelectorAll(".boxopen")[1].innerHTML
+              ) {
+                document
+                  .querySelectorAll(".boxopen")[0]
+                  .classList.add("boxmatch");
+                document
+                  .querySelectorAll(".boxopen")[1]
+                  .classList.add("boxmatch");
+                document
+                  .querySelectorAll(".boxopen")[1]
+                  .classList.remove("boxopen");
+                document
+                  .querySelectorAll(".boxopen")[0]
+                  .classList.remove("boxopen");
+                if (
+                  document.querySelectorAll(".boxmatch").length == emoji.length
+                ) {
+                  alert("You Win!");
+                }
+              } else {
+                document
+                  .querySelectorAll(".boxopen")[1]
+                  .classList.remove("boxopen");
+                document
+                  .querySelectorAll(".boxopen")[0]
+                  .classList.remove("boxopen");
+              }
+            }
+          }, 500);
+        };
+        document.querySelector(".game").appendChild(box);
+      }
+      document.querySelector(".reset").addEventListener("click", function () {
+        window.location.reload();
+      });
+    </script>
+  </body>
+</html>
